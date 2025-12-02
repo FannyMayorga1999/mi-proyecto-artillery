@@ -1,0 +1,40 @@
+config:
+  target: 'https://socialboard.contactvox.com'
+  phases:
+    - duration: 5
+      arrivalRate: 1
+  payload:
+    path: './payload.csv'
+    fields:
+      - empresa
+      - messages_body
+      - author
+      - chatId
+      - senderName
+      - instanceId
+    order: sequence
+    skipHeader: true
+
+scenarios:
+  - name: 'Enviar JSON desde CSV'
+    engine: 'http'
+    flow:
+      - log: "body={{ messages_body }}, author={{ author }}, chatId={{ chatId }}, senderName={{ senderName }}, instanceId={{ instanceId }}"
+      - post:
+          url: '/{{ empresa }}/chatapi'
+          json:
+            messages:
+              - id: '{{ $uuid }}'
+                body: '{{ messages_body }}'
+                fromMe: false
+                self: 0
+                isForwarded: false
+                author: '{{ author }}'
+                time: '{{ $timestamp }}'
+                chatId: '{{ chatId }}'
+                type: 'chat'
+                senderName: '{{ senderName }}'
+                caption: null
+                quotedMsgId: null
+                chatName: '{{ chatId }}'
+            instanceId: '{{ instanceId }}'
