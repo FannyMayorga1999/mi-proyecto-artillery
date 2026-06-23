@@ -1,10 +1,12 @@
 config:
-  target: 'https://socialboard.contactvox.com'
+  target: 'https://omnicentertest.contactvox.com'
+  tls:
+    rejectUnauthorized: false
   phases:
-    - duration: 5
-      arrivalRate: 1
+    - duration: 60
+      arrivalRate: 10
   payload:
-    path: './payload.csv'
+    path: './payload4.csv'
     fields:
       - empresa
       - messages_body
@@ -16,10 +18,10 @@ config:
     skipHeader: true
 
 scenarios:
-  - name: 'Enviar JSON desde CSV'
+  - name: 'Asesor enviando mensaje'
     engine: 'http'
     flow:
-      - log: "body={{ messages_body }}, author={{ author }}, chatId={{ chatId }}, senderName={{ senderName }}, instanceId={{ instanceId }}"
+      - think: '{{ $randomNumber(5,30) }}'
       - post:
           url: '/{{ empresa }}/chatapi'
           json:
