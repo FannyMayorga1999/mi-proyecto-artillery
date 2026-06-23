@@ -1,0 +1,43 @@
+config:
+  target: 'https://omnicentertest.contactvox.com:4005'
+  tls:
+    rejectUnauthorized: false
+  phases:
+    - duration: 120
+      arrivalCount: 500
+  payload:
+    path: './payload4.csv'
+    fields:
+      - empresa
+      - messages_body
+      - author
+      - chatId
+      - senderName
+      - instanceId
+    order: random
+    skipHeader: true
+
+scenarios:
+  - name: 'Asesor enviando mensaje a bonus'
+    engine: 'http'
+    flow:
+      - think: '{{ $randomNumber(5,30) }}'
+      - post:
+          url: '/api/gupshup/webhook/bonus'
+          json:
+            empresa: '{{ empresa }}'
+            messages:
+              - id: '{{ $uuid }}'
+                body: '{{ messages_body }}'
+                fromMe: false
+                self: 0
+                isForwarded: false
+                author: '{{ author }}'
+                time: '{{ $timestamp }}'
+                chatId: '{{ chatId }}'
+                type: 'chat'
+                senderName: '{{ senderName }}'
+                caption: null
+                quotedMsgId: null
+                chatName: '{{ chatId }}'
+            instanceId: '{{ instanceId }}'
